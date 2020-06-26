@@ -1,0 +1,11 @@
+{
+	"devDependencies": {
+		"@types/node": "14.0.14",
+		"@zoltu/file-copier": "2.2.1",
+		"ts-node": "8.10.2",
+		"typescript": "3.9.5"
+	},
+	"scripts": {
+		"vendor": "ts-node --project tsconfig.json ./vendor.ts"
+	}
+}

@@ -1,0 +1,10 @@
+{
+	"dependencies": {
+		"@openzeppelin/contracts": "3.1.0"
+	},
+	"scripts": {
+		"postinstall": "cd scripts && npm install",
+		"build": "cd scripts && npm run build",
+		"deploy": "cd scripts && npm run deploy"
+	}
+}

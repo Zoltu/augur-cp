@@ -1,0 +1,16 @@
+{
+	"extends": "../tsconfig.json",
+	"compilerOptions": {
+		"module": "ES2015",
+		"noEmit": false,
+		"rootDir": "source/ts",
+		"outDir": "source/js",
+		"jsx": "react",
+		"plugins": [ { "transform": "@zoltu/typescript-transformer-append-js-extension/output/index.js", "after": true, } ],
+		"lib": ["DOM", "ES2020"],
+	},
+	"include": [
+		"source/ts/**/*.ts",
+		"source/ts/**/*.tsx",
+	]
+}

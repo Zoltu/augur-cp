@@ -1,0 +1,50 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"label": "docker-compose",
+			"type": "process",
+			"command": "docker-compose.exe",
+			"args": [
+				"up",
+				"--force-recreate",
+				"--always-recreate-deps",
+				"--abort-on-container-exit",
+				"--remove-orphans",
+				"--renew-anon-volumes"
+			],
+			"options": {
+				"cwd": "demo"
+			},
+			"problemMatcher": []
+		},
+		{
+			"type": "npm",
+			"script": "watch",
+			"path": "ui/",
+			"problemMatcher": [
+				"$tsc-watch"
+			],
+			"group": "build",
+			"label": "npm: watch - ui",
+			"detail": "ttsc --project ./tsconfig.json --watch",
+			"isBackground": true
+		},
+		{
+			"type": "npm",
+			"script": "serve",
+			"path": "ui/",
+			"problemMatcher": [],
+			"label": "npm: serve - ui",
+			"detail": "npx http-server source"
+		},
+		{
+			"type": "npm",
+			"script": "deploy",
+			"path": "contracts/scripts/",
+			"problemMatcher": [],
+			"label": "npm: deploy - contracts/scripts",
+			"detail": "npx ts-node --project tsconfig.json ./source/deploy-contracts.ts"
+		}
+	]
+}

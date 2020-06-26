@@ -1,0 +1,10 @@
+{
+	"scripts": {
+		"postinstall": "cd contracts && npm install && cd ../ui && npm install",
+		"build-contracts": "cd contracts && npm run build",
+		"deploy-contracts": "cd contracts && npm run deploy",
+		"build-ui": "cd ui && npm run build",
+		"watch-ui": "cd ui && npm run watch",
+		"serve-ui": "cd ui && npm run serve"
+	}
+}
