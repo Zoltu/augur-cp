@@ -28,15 +28,16 @@ contract AugurConstantProduct is ERC20 {
 	}
 
 	function addLiquidity(uint256 attosharesToBuy) external {
-		uint256 poolConstantBefore = poolConstant();
+		// TODO: need to square root the poolConstant in all 3 places it is referenced in this function... which means we need a square root function from somewhere
+		uint256 poolConstantBefore = sqrt(poolConstant());
 
 		dai.transferFrom(msg.sender, address(this), attosharesToBuy.mul(100));
 		shareToken.publicBuyCompleteSets(augurMarket, attosharesToBuy);
 
 		if (poolConstantBefore == 0) {
-			_mint(msg.sender, poolConstant());
+			_mint(msg.sender, sqrt(poolConstant()));
 		} else {
-			_mint(msg.sender, totalSupply() * poolConstant() / poolConstantBefore - totalSupply());
+			_mint(msg.sender, totalSupply() * sqrt(poolConstant()) / poolConstantBefore - totalSupply());
 		}
 	}
 
@@ -94,5 +95,19 @@ contract AugurConstantProduct is ERC20 {
 
 	function poolConstant() public view returns (uint256) {
 		return shareToken.balanceOf(address(this), YES) * shareToken.balanceOf(address(this), NO);
+	}
+
+	// babylonian method (https://en.wikipedia.org/wiki/Methods_of_computing_square_roots#Babylonian_method)
+	function sqrt(uint y) internal pure returns (uint z) {
+		if (y > 3) {
+			z = y;
+			uint x = y / 2 + 1;
+			while (x < z) {
+				z = x;
+				x = (y / x + x) / 2;
+			}
+		} else if (y != 0) {
+			z = 1;
+		}
 	}
 }
