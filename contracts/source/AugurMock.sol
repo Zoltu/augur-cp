@@ -42,7 +42,7 @@ contract ShareToken {
 
 		dai.transferFrom(msg.sender, address(this), cost);
 
-		for (uint256 i = 0; i < numOutcomes; ++i) {
+		for (uint256 i = 0; i <= numOutcomes; ++i) {
 			uint256 tokenId = getTokenId(market, i);
 			balanceOf[msg.sender][tokenId] = balanceOf[msg.sender][tokenId].add(amount);
 		}
@@ -53,7 +53,7 @@ contract ShareToken {
 	function publicSellCompleteSets(address market, uint256 amount) external returns (bool) {
 		uint256 payment = amount.mul(numTicks).mul(feeNumerator).div(feeDenominator);
 
-		for (uint256 i = 0; i < numOutcomes; ++i) {
+		for (uint256 i = 0; i <= numOutcomes; ++i) {
 			uint256 tokenId = getTokenId(market, i);
 			balanceOf[msg.sender][tokenId] = balanceOf[msg.sender][tokenId].sub(amount);
 		}
@@ -63,7 +63,7 @@ contract ShareToken {
 		return true;
 	}
 
-	function getTokenId(address market, uint256 outcome) private pure returns (uint256 tokenId) {
+	function getTokenId(address market, uint256 outcome) public pure returns (uint256 tokenId) {
 		bytes memory tokenIdBytes = abi.encodePacked(market, uint8(outcome));
 		assembly { tokenId := mload(add(tokenIdBytes, add(0x20, 0))) }
 	}
