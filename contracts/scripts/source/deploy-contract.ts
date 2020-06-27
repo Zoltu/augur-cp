@@ -4,9 +4,13 @@ import { Bytes,EncodableArray  } from '@zoltu/ethereum-types'
 import { keccak256 } from '@zoltu/ethereum-crypto'
 import { SignerFetchRpc } from './rpc-factories'
 import { encodeParameters } from '@zoltu/ethereum-abi-encoder';
+import { CompilerOutput } from 'solc'
 
 export const proxyDeployerAddress = 0x7a0d94f55792c434d74a40883c6ed8545e406d12n
-const compilerOutputJsonPath = path.join(__dirname, '..', '..', '..', 'ui', 'source', 'ts', 'generated', 'augur-constant-product-output.json')
+// Note: put most important last, as during merge the last will overwrite the first
+const compilerOutputJsonPaths = [
+	path.join(__dirname, '..', '..', '..', 'ui', 'source', 'ts', 'generated', 'augur-constant-product-output.json'),
+]
 
 export async function ensureProxyDeployerDeployed(rpc: SignerFetchRpc): Promise<void> {
 	const deployerBytecode = await rpc.getCode(proxyDeployerAddress)
@@ -38,7 +42,8 @@ async function getDeploymentBytecode(fileName: string, contractName: string, con
 
 async function getDeployedBytecode(fileName: string, contractName: string) {
 	const compilerOutput = await getCompilerOutput()
-	const deployedBytecodeString = compilerOutput.contracts[fileName][contractName].evm.deployedBytecode.object
+	const deployedBytecodeString = compilerOutput?.contracts?.[fileName]?.[contractName]?.evm?.deployedBytecode?.object
+	if (deployedBytecodeString === undefined) throw new Error(`Bytecode not available in compiler output for ${fileName}.${contractName}`)
 	return Bytes.fromHexString(deployedBytecodeString)
 }
 
@@ -48,8 +53,14 @@ export async function getDeploymentAddress(deploymentBytecode: Bytes) {
 	return await keccak256.hash([0xff, ...Bytes.fromUnsignedInteger(proxyDeployerAddress, 160), ...Bytes.fromUnsignedInteger(salt, 256), ...Bytes.fromUnsignedInteger(deploymentBytecodeHash, 256)]) & 0xffffffffffffffffffffffffffffffffffffffffn
 }
 
-let memoizedMarginTraderCompilerOutput: string | undefined
+let memoizedCompilerOutput: CompilerOutput | undefined
 async function getCompilerOutput() {
-	const compilerOutputJsonString = memoizedMarginTraderCompilerOutput || await filesystem.readFile(compilerOutputJsonPath, 'utf8')
-	return JSON.parse(compilerOutputJsonString)
+	if (memoizedCompilerOutput !== undefined) return memoizedCompilerOutput
+	let result = { contracts: {} } as CompilerOutput
+	for (const path of compilerOutputJsonPaths) {
+		const compilerOutput = await filesystem.readFile(path, 'utf-8')
+		result = { ...JSON.parse(compilerOutput) }
+	}
+	memoizedCompilerOutput = result
+	return result
 }

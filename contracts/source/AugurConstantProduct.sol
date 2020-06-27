@@ -1,25 +1,24 @@
 pragma solidity 0.6.10;
 
-import { IERC20, ERC20 } from "@openzeppelin/contracts/token/ERC20/ERC20.sol";
-
-interface IAugurMarket {
-
-}
+import { ERC20 } from "@openzeppelin/contracts/token/ERC20/ERC20.sol";
+import { IERC20 } from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
+import { ShareToken } from "./AugurMock.sol";
+import { Dai } from "./DaiMock.sol";
 
 interface IAugurShareToken {
-		function publicBuyCompleteSets(IAugurMarket _market, uint256 _amount) external returns (bool);
+		function publicBuyCompleteSets(address _market, uint256 _amount) external returns (bool);
 		function unsafeTransferFrom(address _from, address _to, uint256 _id, uint256 _value) external;
 		function balanceOf(address owner, uint256 id) external view returns (uint256);
 }
 
 contract AugurConstantProduct is ERC20 {
-	IAugurShareToken constant augurShareToken = IAugurShareToken(0x0); // TODO
-	IAugurMarket constant augurMarket = IAugurMarket(0x0); // TODO
-	IERC20 constant dai = IERC20(0x6B175474E89094C44Da98b954EedeAC495271d0F); // TODO
-	uint256 constant numTicks = 100;
-	uint256 constant INVALID = 0;
-	uint256 constant NO = 1;
-	uint256 constant YES = 2;
+	IERC20 public dai = new Dai();
+	ShareToken public augurShareToken = new ShareToken(dai);
+	address public constant augurMarket = address(0x0); // TODO
+	uint256 public constant numTicks = 100;
+	uint256 public constant INVALID = 0;
+	uint256 public constant NO = 1;
+	uint256 public constant YES = 2;
 
 	constructor() ERC20("Augur Constant Product: Trump 2020", "ACP-TRUMP2020") public {
 	}

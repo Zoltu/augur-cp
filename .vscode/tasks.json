@@ -13,9 +13,6 @@
 				"--remove-orphans",
 				"--renew-anon-volumes"
 			],
-			"options": {
-				"cwd": "demo"
-			},
 			"problemMatcher": []
 		},
 		{

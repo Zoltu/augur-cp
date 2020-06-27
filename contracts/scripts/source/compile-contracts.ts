@@ -6,6 +6,8 @@ import { generateContractInterfaces } from '@zoltu/solidity-typescript-generator
 const outputFileNamePrefix = 'augur-constant-product'
 const sourceFiles = [
 	'AugurConstantProduct.sol',
+	'AugurMock.sol',
+	'DaiMock.sol',
 	'@openzeppelin/contracts/token/ERC20/IERC20.sol',
 	'@openzeppelin/contracts/token/ERC20/ERC20.sol',
 	'@openzeppelin/contracts/GSN/Context.sol',

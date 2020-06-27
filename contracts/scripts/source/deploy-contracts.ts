@@ -9,7 +9,6 @@ const gasPrice = 1n * 10n**9n
 
 async function main() {
 	const rpc = await createMemoryRpc(jsonRpcEndpoint, gasPrice)
-	// deploy first to ensure have something other than genesis block as 'latest' block
 	const augurConstantProductAddress = await deploy(rpc, 'AugurConstantProduct.sol', 'AugurConstantProduct')
 	console.log(augurConstantProductAddress.toString(16).padStart(40, '0'))
 }

@@ -3,18 +3,11 @@ services:
   parity:
     # TODO: update to image that contains Augur v2
     image: 'keydonix/parity-instantseal'
-    environment:
-      FAKETIME_TIMESTAMP_FILE: '/faketime/faketime'
-      FAKETIME_NO_CACHE: '1'
     ports:
       - target: '8545'
         published: '1235'
         protocol: 'tcp'
         mode: 'host'
-    volumes:
-      - type: 'volume'
-        source: 'faketime'
-        target: '/faketime'
 
   geth:
     # TODO: update to image that contains Augur v2
