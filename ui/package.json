@@ -2,12 +2,12 @@
 	"dependencies": {
 		"@pika/react": "16.13.1",
 		"@pika/react-dom": "16.13.1",
-		"@zoltu/ethereum-abi-encoder": "5.0.0",
+		"@zoltu/ethereum-abi-encoder": "5.0.1",
 		"@zoltu/ethereum-crypto": "2.1.1",
 		"@zoltu/ethereum-fetch-json-rpc": "13.0.0",
 		"@zoltu/ethereum-types": "9.0.0",
-		"@zoltu/solidity-typescript-generator-fetch-dependencies": "5.0.0",
-		"@zoltu/solidity-typescript-generator-browser-dependencies": "4.1.0",
+		"@zoltu/solidity-typescript-generator-fetch-dependencies": "5.0.1",
+		"@zoltu/solidity-typescript-generator-browser-dependencies": "4.1.1",
 		"es-module-shims": "0.4.7",
 		"react": "16.13.1",
 		"react-dom": "16.13.1"

@@ -37,6 +37,19 @@ contract ShareToken {
 		emit TransferSingle(msg.sender, from, to, id, amount);
 	}
 
+	function unsafeBatchTransferFrom(address from, address to, uint256[] memory tokenIds, uint256[] memory values) public {
+		require(tokenIds.length == values.length, "ERC1155: Batch Transfer: Token IDs length != values length");
+		require(to != address(0), "ERC1155: Batch Transfer: Cannot send to 0 address.");
+		require(from == msg.sender || isApprovedForAll[from][msg.sender], "ERC1155: Batch Transfer: 'msg.sender' not approved to send 'from' tokens.");
+		for (uint256 i = 0; i < tokenIds.length; ++i) {
+			uint256 tokenId = tokenIds[i];
+			uint256 value = values[i];
+			balanceOf[from][tokenId] = balanceOf[from][tokenId].sub(value);
+			balanceOf[to][tokenId] = balanceOf[to][tokenId].add(value);
+			emit TransferBatch(msg.sender, from, to, tokenIds, values);
+		}
+	}
+
 	function publicBuyCompleteSets(address market, uint256 amount) external returns (bool) {
 		uint256 cost = amount.mul(numTicks);
 
@@ -66,5 +79,16 @@ contract ShareToken {
 	function getTokenId(address market, uint256 outcome) public pure returns (uint256 tokenId) {
 		bytes memory tokenIdBytes = abi.encodePacked(market, uint8(outcome));
 		assembly { tokenId := mload(add(tokenIdBytes, add(0x20, 0))) }
+	}
+
+	function balanceOfBatch(address[] calldata owners, uint256[] calldata tokenIds) external view returns (uint256[] memory) {
+		require(owners.length == tokenIds.length, "EIP 1155: batch balance requires same length owners and ids");
+		uint256[] memory balances = new uint256[](owners.length);
+		for (uint256 i = 0; i < owners.length; ++i) {
+			address owner = owners[i];
+			uint256 tokenId = tokenIds[i];
+			balances[i] = balanceOf[owner][tokenId];
+		}
+		return balances;
 	}
 }
