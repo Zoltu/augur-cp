@@ -11,7 +11,7 @@ const jsonRpcAddress = 'http://localhost:1237'
 const rpc = new FetchJsonRpc(jsonRpcAddress, window.fetch.bind(window), {})
 const fetchDependencies = new FetchDependencies(rpc)
 const browserDependencies = new BrowserDependencies(fetchDependencies, {})
-const augurConstantProduct = new AugurConstantProduct(browserDependencies, 0x3f9a5b371edc4d1adf630df07ce57f4634fdb983n)
+const augurConstantProduct = new AugurConstantProduct(browserDependencies, 0xff2e82463af56027d6b2fd94f681d9519096b416n)
 const marketAddress = 0x0n
 
 async function main() {
@@ -54,17 +54,22 @@ async function main() {
 			// TODO: make into a modal that prompts to connect, then prompts for approval, then adds liquidity and presents errors along the way
 			augurConstantProduct.addLiquidity(shares)
 				.then(() => 'connect' in rootModel.user || rootModel.user.refresh())
-				.then(() => { rootModel.pool.refresh() })
+				.then(() => rootModel.pool.refresh())
 				.catch(console.error)
 		},
-		removeLiquidity: (_poolTokens: bigint) => {}, // TODO
+		removeLiquidity: (poolTokens: bigint) => {
+			augurConstantProduct.removeLiquidity(poolTokens)
+				.then(() => 'connect' in rootModel.user || rootModel.user.refresh())
+				.then(() => rootModel.pool.refresh())
+				.catch(console.error)
+		},
 		swap: (...[inputToken, inputAmount, outputToken]) => {
 			const promise = (inputToken === 'dai') ? augurConstantProduct.enterPosition(inputAmount, outputToken === 'yes')
 				: (outputToken === 'dai') ? augurConstantProduct.exitPosition(inputAmount * 100n)
 				: augurConstantProduct.swap(inputAmount, inputToken === 'yes')
 			promise
+			.then(() => 'connect' in rootModel.user || rootModel.user.refresh())
 				.then(() => rootModel.pool.refresh())
-				.then(() => 'connect' in rootModel.user || rootModel.user.refresh())
 				.catch(console.error)
 		},
 		mintDai: () => {

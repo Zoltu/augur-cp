@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { stringToAtto, decimalStringToBigint } from '../library/big-number-utilities'
+import { decimalStringToBigint } from '../library/big-number-utilities'
 
 export interface LiquidityModel {
 	readonly addLiquidity: (attoshares: bigint) => void
@@ -19,7 +19,7 @@ export function Liquidity(model: LiquidityModel) {
 
 	function RemoveLiquidity({ style }: { style?: React.CSSProperties }) {
 		const [amountString, setAmountString] = React.useState('')
-		const poolToRedeem = /^\d+(?:\.\d+)?$/.test(amountString) ? stringToAtto(amountString) : 0n
+		const poolToRedeem = /^\d+(?:\.\d+)?$/.test(amountString) ? decimalStringToBigint(amountString, 16) : 0n
 
 		return <div style={style}>
 			<input placeholder='pool tokens to redeem' type='number' onChange={event => setAmountString(event.target.value)} value={amountString} />

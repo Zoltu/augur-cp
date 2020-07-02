@@ -38,6 +38,22 @@ contract AugurConstantProduct is ERC20 {
 		}
 	}
 
+	function removeLiquidity(uint256 poolTokensToSell) external {
+		uint256 poolSupply = totalSupply();
+		(uint256 poolInvalid, uint256 poolNo, uint256 poolYes) = shareBalances(address(this));
+		uint256 poolDai = dai.balanceOf(address(this));
+		uint256 invalidShare = poolInvalid.mul(poolTokensToSell).div(poolSupply);
+		uint256 noShare = poolNo.mul(poolTokensToSell).div(poolSupply);
+		uint256 yesShare = poolYes.mul(poolTokensToSell).div(poolSupply);
+		uint256 daiShare = poolDai.mul(poolTokensToSell).div(poolSupply);
+		_burn(msg.sender, poolTokensToSell);
+		shareTransfer(address(this), msg.sender, invalidShare, noShare, yesShare);
+		dai.transfer(msg.sender, daiShare);
+
+		// TODO: convert min(poolInvalid, poolYes, poolNo) to DAI by selling complete sets
+		// CONSIDER: selling complete sets incurs Augur fees, maybe we should let the user sell the sets themselves if they want to pay the fee?
+	}
+
 	function enterPosition(uint256 amountInDai, bool buyYes) external returns (uint256) {
 		(uint256 poolInvalid, uint256 poolNo, uint256 poolYes) = shareBalances(address(this));
 		uint256 setsToBuy = amountInDai.div(numTicks);

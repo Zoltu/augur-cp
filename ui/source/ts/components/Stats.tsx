@@ -51,7 +51,7 @@ function PoolStats(model: StatsModel['pool']) {
 		case 'resolved':
 			return <div>
 				<button onClick={model.refresh}>Refresh</button>
-				<div>Supply: {attoToString(model.value.supply)}</div>
+				<div>Supply: {bigintToDecimalString(model.value.supply, 16n)}</div>
 				<div>DAI: {attoToString(model.value.dai)}</div>
 				<div>Yes: {bigintToDecimalString(model.value.yes, 16n)}</div>
 				<div>No: {bigintToDecimalString(model.value.no, 16n)}</div>
@@ -74,7 +74,7 @@ function UserStats(model: StatsModel['user'] & { mintDai: () => void, approveDai
 			case 'resolved':
 				return <div>
 					<button onClick={model.refresh}>Refresh</button>
-					<div>Pool: {attoToString(model.value.pool)}</div>
+					<div>Pool: {bigintToDecimalString(model.value.pool, 16n)}</div>
 					<div>DAI: {attoToString(model.value.dai)}<button onClick={model.approveDai} hidden={model.value.daiApproved}>Approve</button><button onClick={model.mintDai}>Mint</button></div>
 					<div>Yes: {bigintToDecimalString(model.value.yes, 16n)}<button onClick={model.approveShareToken} hidden={model.value.shareApproved}>Approve</button></div>
 					<div>No: {bigintToDecimalString(model.value.no, 16n)}<button onClick={model.approveShareToken} hidden={model.value.shareApproved}>Approve</button></div>
